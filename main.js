@@ -7,14 +7,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
    SISTEMA DE AUDIO
 ========================== */
 let startButton = null;
-const playstationSound = new Audio('/sounds/01. Bootup.mp3');
-const crashSound = new Audio('/sounds/crash.mp3');
+const playstationSound = new Audio('./sounds/01. Bootup.mp3');
+const crashSound = new Audio('./sounds/crash.mp3');
 const galaxyPlaylist = [
-  '/sounds/1-02. File Select.mp3',
-  '/sounds/02. The Star Dust Festival.mp3',
-  '/sounds/08. Rosetta of the Observatory 1.mp3',
-  '/sounds/10. Star Dust Road.mp3',
-  '/sounds/17. Wind Garden.mp3'
+  './sounds/1-02. File Select.mp3',
+  './sounds/02. The Star Dust Festival.mp3',
+  './sounds/08. Rosetta of the Observatory 1.mp3',
+  './sounds/10. Star Dust Road.mp3',
+  './sounds/17. Wind Garden.mp3'
 ];
 
 let currentGalaxyTrack = null;
@@ -111,11 +111,11 @@ async function startGalaxyMusic() {
    UI SOUNDS (PS2 BIOS STYLE)
 ========================== */
 const uiSounds = {
-  hover: new Audio('/sounds/12.mp3'),
-  click: new Audio('/sounds/12.mp3'),
-  back: new Audio('/sounds/15.mp3'),
-  start: new Audio('/sounds/14.mp3'),
-  open: new Audio('/sounds/13.mp3')
+  hover: new Audio('./sounds/12.mp3'),
+  click: new Audio('./sounds/12.mp3'),
+  back: new Audio('./sounds/15.mp3'),
+  start: new Audio('./sounds/14.mp3'),
+  open: new Audio('./sounds/13.mp3')
 };
 
 Object.values(uiSounds).forEach(s => {
@@ -127,19 +127,19 @@ Object.values(uiSounds).forEach(s => {
 ========================== */
 const regalos = [
   {
-    foto: '/img/1.png',
+    foto: './img/1.png',
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Que este nuevo año de vida esté lleno de aventuras increíbles, momentos especiales y todo lo que tu corazón desee. ¡Eres increíble!',
     autor: 'Mari'
   },
   {
-    foto: '/img/2.png',
+    foto: './img/2.png',
     miniTexto: 'Un regalo especial 🎁',
     mensajeCompleto: 'Gracias por ser una persona tan maravillosa. Espero que este día sea tan especial como tú lo eres para todos nosotros.',
     autor: 'Juan'
   },
   {
-    foto: '/img/3.jpg',
+    foto: './img/3.jpg',
     miniTexto: 'Para ti 💙',
     mensajeCompleto: 'Que cada momento de este nuevo año te traiga alegría, éxito y mucho amor. ¡Feliz cumpleaños!',
     autor: 'Ana'
