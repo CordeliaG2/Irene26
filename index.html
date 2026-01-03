@@ -5,10 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Para ti ❤️</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/quantum.js"></script>
 </head>
 <body>
-  <div class="loading" id="loading">Cargando...</div>
+  <div class="loading" id="loading">
+    <l-quantum size="45" speed="1.75" color="blue"></l-quantum>
+  </div>
+  
   <canvas id="galaxy"></canvas>
+  
+  <!-- Botones de control -->
+  <button id="creditsBtn" onclick="openCredits()">✨ Créditos</button>
+  <button id="musicBtn" onclick="toggleMusic()">🔊</button>
   
   <!-- Modal para fotos -->
   <div id="photoModal">
@@ -23,16 +31,51 @@
     </div>
   </div>
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <!-- Modal de créditos -->
+  <div id="creditsModal">
+    <button class="close-btn" onclick="closeCredits()">×</button>
+    <div class="credits-content">
+      <h2>🌟 Créditos 🌟</h2>
+      <ul class="credits-list">
+        <li class="credit-item">
+          <h3>María</h3>
+          <p>Por su hermoso mensaje de cumpleaños y sus palabras llenas de cariño</p>
+        </li>
+        <li class="credit-item">
+          <h3>Juan</h3>
+          <p>Por tomarse el tiempo de escribir desde el corazón</p>
+        </li>
+        <li class="credit-item">
+          <h3>Ana</h3>
+          <p>Por sus buenos deseos y energía positiva</p>
+        </li>
+        <li class="credit-item">
+          <h3>Carlos</h3>
+          <p>Por compartir momentos especiales y recuerdos únicos</p>
+        </li>
+        <li class="credit-item">
+          <h3>Laura</h3>
+          <p>Por cada risa compartida y su amistad incondicional</p>
+        </li>
+        <li class="credit-item">
+          <h3>Pedro</h3>
+          <p>Por siempre estar presente en los momentos importantes</p>
+        </li>
+        <li class="credit-item">
+          <h3>Música</h3>
+          <p>Super Mario Galaxy OST - Nintendo<br>
+          Intro PlayStation - Sony Computer Entertainment<br>
+          Intro Crash Bandicoot 2 - Universal Interactive Studios</p>
+        </li>
+        <li class="credit-item">
+          <h3>Desarrollado con ❤️</h3>
+          <p>Three.js para la galaxia 3D<br>
+          Creado especialmente para este cumpleaños</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   <script type="module" src="./main.js"></script>
-  </script>
 </body>
 </html>
