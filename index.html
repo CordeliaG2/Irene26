@@ -7,11 +7,32 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
+  <div class="loading" id="loading">Cargando...</div>
   <canvas id="galaxy"></canvas>
+  
+  <!-- Modal para fotos -->
+  <div id="photoModal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <div class="modal-content">
+      <img id="modalPhoto" class="modal-photo" src="" alt="Foto">
+      <div class="modal-message">
+        <h2 id="modalTitle">Mensaje</h2>
+        <p id="modalMessage"></p>
+        <div class="author" id="modalAuthor"></div>
+      </div>
+    </div>
+  </div>
 
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
   <script type="module" src="./main.js"></script>
-
+  </script>
 </body>
 </html>
