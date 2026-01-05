@@ -182,12 +182,12 @@ let modalOpen = false;
 ========================== */
 const CONFIG = {
   galaxy: {
-    count: 500000,
+    count: 280000,
     radius: 7,
     branches: 10,
     spin: 0.30,
     size: 0.015,
-    insideColor: "#ffffff",
+    insideColor: "#dbe7ff",
     middleColor: "#87ceeb",
     outsideColor: "#4a9eff",
     randomness: 1.0,
@@ -199,7 +199,7 @@ const CONFIG = {
     fontSize: 100,
     scale: 2.2,
     floatAmplitude: 0.08,
-    floatSpeed: 0.0008,
+    floatSpeed: 0.0006,
   },
   photos: {
     scale: 1.5,
@@ -211,7 +211,7 @@ const CONFIG = {
     size: 0.05,
   }
 };
-
+const TEXT_ASPECT = CONFIG.text.canvasWidth / CONFIG.text.canvasHeight; // 4
 /* ==========================
    PANTALLA DE INICIO
 ========================== */
@@ -221,8 +221,8 @@ function createStartScreen() {
   startScreen.id = 'startScreen';
   startScreen.innerHTML = `
     <div class="start-content">
-      <h1>🌌 Bienvenido a Irene Galaxy Museum</h1>
-      <p>Una experiencia visual y sonora</p>
+      <h1>🌌 Te doy la bienvenida al Irene Galaxy Museum</h1>
+      <p>Ademas de un regalo, es una experiencia visual y sonora</p>
       <button id="startButton" class="start-btn">
         ▶ Comenzar
       </button>
@@ -314,11 +314,12 @@ scene.fog = new THREE.Fog(0x000000, 8, 60);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.z = 12;
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 1.2;
+renderer.toneMappingExposure = 0.9;
+renderer.setClearColor(0x050008, 1);
 
 /* ==========================
    RAYCASTER
@@ -434,9 +435,9 @@ const material = new THREE.ShaderMaterial({
     void main() {
       float h = normalize(vPos).y * 0.5 + 0.5;
 
-      vec3 top = vec3(0.06, 0.02, 0.12);
-      vec3 mid = vec3(0.01, 0.00, 0.03);
-      vec3 bottom = vec3(0.12, 0.02, 0.04);
+      vec3 top = vec3(0.12, 0.04, 0.25);
+      vec3 mid = vec3(0.04, 0.01, 0.08);
+      vec3 bottom = vec3(0.25, 0.04, 0.08);
 
       vec3 color = mix(bottom, top, h);
       color = mix(color, mid, sin(time * 0.03) * 0.5 + 0.5);
@@ -452,6 +453,7 @@ const material = new THREE.ShaderMaterial({
 }
 
 const skybox = crearSkybox();
+scene.background = null; // asegúrate
 
 const starParticles = [];
 function createFloatingStarParticles() {
@@ -608,9 +610,9 @@ function crearTexto(mensaje, index) {
   c.height = CONFIG.text.canvasHeight;
 
   const ctx = c.getContext("2d");
-  ctx.shadowColor = '#87ceeb';
+  ctx.shadowColor = '#ff5cff';
   ctx.shadowBlur = 40;
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#ffe6ff';
   ctx.font = `bold ${CONFIG.text.fontSize}px Arial`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -628,7 +630,6 @@ function crearTexto(mensaje, index) {
     new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: true, depthWrite: false })
   );
 
-  sprite.scale.set(0.001, 0.001, 1);
 
   const angle = Math.random() * Math.PI * 2;
   const radius = 2.5 + Math.random() * 2.5;
@@ -947,9 +948,16 @@ canvas.addEventListener("touchend", (e) => {
 ========================== */
 let orbit = 0;
 const clock = new THREE.Clock();
+let lastFrame = 0;
+const FPS = 120;
+const frameTime = 1000 / FPS;
+let lastFrameTime = 0;
+const frameDuration = 1000 / FPS;
 
-function animate() {
+function animate(time) {
   requestAnimationFrame(animate);
+  if (time - lastFrameTime < frameDuration) return;
+  lastFrameTime = time;
   const now = Date.now();
   const elapsedTime = clock.getElapsedTime();
 
@@ -1083,7 +1091,10 @@ if (currentState === STATES.INTRO) {
     const positions = glitter.geometry.attributes.position.array;
     for (let i = 0; i < CONFIG.particles.count; i++) {
       const i3 = i * 3;
-      positions[i3 + 1] += Math.sin(elapsedTime * 2 + i) * 0.01;
+      if (i % 3 === 0) {
+        positions[i3 + 1] += Math.sin(elapsedTime * 2 + i) * 0.01;
+      }
+
     }
     glitter.geometry.attributes.position.needsUpdate = true;
 
@@ -1128,8 +1139,11 @@ if (currentState === STATES.INTRO) {
         Math.sin(now * CONFIG.text.floatSpeed + i * 0.5) *
           CONFIG.text.floatAmplitude;
 
-      t.scale.setScalar(
-        THREE.MathUtils.lerp(0.001, CONFIG.text.scale, progress)
+      const s = THREE.MathUtils.lerp(0.001, CONFIG.text.scale, progress);
+      t.scale.set(
+        s * TEXT_ASPECT, // X
+        s,               // Y
+        1
       );
 
       t.lookAt(camera.position);
