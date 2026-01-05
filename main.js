@@ -14,7 +14,8 @@ const galaxyPlaylist = [
   './sounds/02. The Star Dust Festival.mp3',
   './sounds/08. Rosetta of the Observatory 1.mp3',
   './sounds/10. Star Dust Road.mp3',
-  './sounds/17. Wind Garden.mp3'
+  './sounds/17. Wind Garden.mp3',
+  './sounds/videoplayback.mp3'
 ];
 
 let currentGalaxyTrack = null;
@@ -145,22 +146,22 @@ const regalos = [
     autor: 'Ana'
   },
   {
-    foto: 'https://via.placeholder.com/400x400/87ceeb/ffffff?text=Foto+4',
+    foto: './img/4.jpg',
     miniTexto: 'Recuerdos únicos 🌟',
     mensajeCompleto: 'Los mejores momentos están por venir. Que este año sea el inicio de algo extraordinario en tu vida.',
     autor: 'Carlos'
   },
   {
-    foto: 'https://via.placeholder.com/400x400/4a9eff/ffffff?text=Foto+5',
+    foto: './img/5.jpg',
     miniTexto: 'Momentos especiales ⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
     autor: 'Laura'
   },
   {
-    foto: 'https://via.placeholder.com/400x400/87ceeb/ffffff?text=Foto+6',
-    miniTexto: 'Siempre recordado 💫',
-    mensajeCompleto: 'Eres una persona única y especial. Que este cumpleaños sea el mejor de todos. ¡Te lo mereces!',
-    autor: 'Pedro'
+    foto: './img/6.jpg',
+    miniTexto: '💫',
+    mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
+    autor: 'Servin'
   }
 ];
 
@@ -220,10 +221,10 @@ function createStartScreen() {
   startScreen.id = 'startScreen';
   startScreen.innerHTML = `
     <div class="start-content">
-      <h1>🌌 Galaxia Interactiva</h1>
+      <h1>🌌 Bienvenido a Irene Galaxy Museum</h1>
       <p>Una experiencia visual y sonora</p>
       <button id="startButton" class="start-btn">
-        ▶ Comenzar Experiencia
+        ▶ Comenzar
       </button>
       <p class="hint">🎧 Activa el audio para mejor experiencia</p>
     </div>
@@ -308,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ========================== */
 const canvas = document.getElementById("galaxy");
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x000000, 8, 30);
+scene.fog = new THREE.Fog(0x000000, 8, 60);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.z = 12;
@@ -410,6 +411,47 @@ function createStarShape() {
   shape.closePath();
   return shape;
 }
+function crearSkybox() {
+  const geometry = new THREE.SphereGeometry(50, 64, 64);
+
+const material = new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  fog: false,
+  uniforms: {
+    time: { value: 0 }
+  },
+  vertexShader: `
+    varying vec3 vPos;
+    void main() {
+      vPos = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float time;
+    varying vec3 vPos;
+
+    void main() {
+      float h = normalize(vPos).y * 0.5 + 0.5;
+
+      vec3 top = vec3(0.06, 0.02, 0.12);
+      vec3 mid = vec3(0.01, 0.00, 0.03);
+      vec3 bottom = vec3(0.12, 0.02, 0.04);
+
+      vec3 color = mix(bottom, top, h);
+      color = mix(color, mid, sin(time * 0.03) * 0.5 + 0.5);
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `
+});
+
+  const sky = new THREE.Mesh(geometry, material);
+  scene.add(sky);
+  return sky;
+}
+
+const skybox = crearSkybox();
 
 const starParticles = [];
 function createFloatingStarParticles() {
@@ -611,6 +653,45 @@ function crearTexto(mensaje, index) {
 }
 
 regalos.forEach((regalo, idx) => crearTexto(regalo.miniTexto, idx));
+const hints = [
+  { text: "Arrastra para explorar", delay: 2000 },
+  { text: "Toca las fotos", delay: 7000 },
+  { text: "Algunas guardan algo especial", delay: 12000 }
+];
+
+const hintSprites = [];
+function crearHint(texto, y = -2) {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 256;
+
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "rgba(232,246,255,0.9)";
+  ctx.font = "48px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(texto, c.width / 2, c.height / 2);
+
+  const sprite = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      map: new THREE.CanvasTexture(c),
+      transparent: true,
+      opacity: 0,
+      depthTest: false,
+      depthWrite: false
+    })
+  );
+
+  sprite.scale.set(6, 1.5, 1);
+  sprite.position.set(0, y, 1.5);
+  sprite.userData = {
+    startTime: Date.now(),
+    life: 6000
+  };
+
+  scene.add(sprite);
+  hintSprites.push(sprite);
+}
 
 /* ==========================
    FOTOS
@@ -942,6 +1023,9 @@ if (currentState === STATES.INTRO) {
           s.userData.appearTime = baseTime + 600 + i * 200;
         });
 
+        hints.forEach(h =>
+          setTimeout(() => crearHint(h.text), h.delay)
+        );
         currentState = STATES.EXPLORACION;
         document.getElementById('creditsBtn').style.display = 'block';
         document.getElementById('musicBtn').style.display = 'block';
@@ -1003,6 +1087,27 @@ if (currentState === STATES.INTRO) {
     }
     glitter.geometry.attributes.position.needsUpdate = true;
 
+    hintSprites.forEach((h, i) => {
+      const t = Date.now() - h.userData.startTime;
+
+      if (t < 1000) {
+        h.material.opacity = t / 1000;
+      } else if (t > h.userData.life - 1000) {
+        h.material.opacity = 1 - (t - (h.userData.life - 1000)) / 1000;
+      } else {
+        h.material.opacity = 0.6;
+      }
+
+      h.position.y += Math.sin(clock.getElapsedTime() + i) * 0.0005;
+
+      h.lookAt(camera.position);
+
+      if (t > h.userData.life) {
+        scene.remove(h);
+      }
+    });
+
+
     textos.forEach((t, i) => {
       if (t.userData.appearTime === null) return;
 
@@ -1060,6 +1165,9 @@ if (currentState === STATES.INTRO) {
 
 
     galaxy.rotation.y += 0.00015;
+  }
+  if (skybox) {
+    skybox.material.uniforms.time.value = elapsedTime;
   }
 
   camera.lookAt(0, 0, 0);
