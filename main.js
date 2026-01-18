@@ -14,7 +14,6 @@ const galaxyPlaylist = [
   './sounds/02. The Star Dust Festival.mp3',
   './sounds/08. Rosetta of the Observatory 1.mp3',
   './sounds/10. Star Dust Road.mp3',
-  './sounds/17. Wind Garden.mp3',
   './sounds/videoplayback.mp3'
 ];
 
@@ -130,29 +129,29 @@ const regalos = [
   {
     foto: './img/1.png',
     miniTexto: 'Feliz cumple ✨',
-    mensajeCompleto: 'Que este nuevo año de vida esté lleno de aventuras increíbles, momentos especiales y todo lo que tu corazón desee. ¡Eres increíble!',
+    mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
     autor: 'Mari'
   },
   {
     foto: './img/2.png',
-    miniTexto: 'Un regalo especial 🎁',
-    mensajeCompleto: 'Gracias por ser una persona tan maravillosa. Espero que este día sea tan especial como tú lo eres para todos nosotros.',
-    autor: 'Juan'
+    miniTexto: '🎁',
+    mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
+    autor: 'lis'
   },
   {
-    foto: './img/3.jpg',
+    foto: './img/no.jpg',
     miniTexto: 'Para ti 💙',
     mensajeCompleto: 'Que cada momento de este nuevo año te traiga alegría, éxito y mucho amor. ¡Feliz cumpleaños!',
     autor: 'Ana'
   },
   {
-    foto: './img/4.jpg',
+    foto: './img/no.jpg',
     miniTexto: 'Recuerdos únicos 🌟',
     mensajeCompleto: 'Los mejores momentos están por venir. Que este año sea el inicio de algo extraordinario en tu vida.',
     autor: 'Carlos'
   },
   {
-    foto: './img/5.jpg',
+    foto: './img/no.jpg',
     miniTexto: 'Momentos especiales ⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
     autor: 'Laura'
@@ -222,7 +221,7 @@ function createStartScreen() {
   startScreen.innerHTML = `
     <div class="start-content">
       <h1>🌌 Te doy la bienvenida al Irene Galaxy Museum</h1>
-      <p>Ademas de un regalo, es una experiencia visual y sonora</p>
+      <p>Un regalo especial</p>
       <button id="startButton" class="start-btn">
         ▶ Comenzar
       </button>
