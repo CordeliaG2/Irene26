@@ -94,8 +94,8 @@ body {
 }
 
 .modal-content {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 90vw;
+  max-height: 90dvh;
   display: flex;
   gap: 30px;
   align-items: center;
@@ -183,22 +183,22 @@ body {
 
 .modal-photo {
   max-width: 500px;
-  max-height: 70vh;
-  border-radius: 15px;
+  max-height: 70dvh;
+  border-radius: 20px;
   box-shadow: 0 0 50px rgba(135, 206, 235, 0.5);
   object-fit: contain;
 }
 
 .modal-message {
-  max-width: 400px;
+  max-width: 420px;
   color: #fff;
   padding: 30px;
-  background: rgba(74, 158, 255, 0.1);
-  border-radius: 15px;
+  background: rgba(74, 158, 255, 0.12);
+  border-radius: 20px;
   border: 2px solid rgba(135, 206, 235, 0.3);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
   overflow-y: auto;
-  max-height: 60vh;
+  max-height: 75dvh;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -235,11 +235,22 @@ body {
     object-fit: cover;
   }
   .modal-content {
+    flex-direcction:column;
+    gap: 15px;
+    width: 100%;
     max-height: 85dvh;
+  }
+  .modal-photo {
+    max-width: 90%;
+    max-height: 45dvh;
+    border-radius: 18px;
   }
 
   .modal-message {
+    max-width: 90%;
     max-height: 40dvh;
+    padding: 20px;
+    font-size: 16px;
     overflow-y: auto;
   }
 
