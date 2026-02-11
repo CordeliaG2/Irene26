@@ -155,6 +155,13 @@ function getSavedUnlocked() {
 function setSavedUnlocked(count) {
   localStorage.setItem(STORAGE_UNLOCKED, count.toString());
 }
+function getSeenPhotos() {
+  return parseInt(localStorage.getItem("seenPhotos") || "0");
+}
+
+function setSeenPhotos(n) {
+  localStorage.setItem("seenPhotos", n);
+}
 
 function showNotification(text) {
   const el = document.getElementById("notification");
@@ -178,42 +185,42 @@ const regalos = [
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
     autor: 'Mari',
-    hora: "07:00"
+    hora: "12:00"
   },
   {
     foto: './img/2.png',
     miniTexto: '🎁',
     mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
     autor: 'lis',
-    hora: "07:30"
+    hora: "12:05"
   },
   {
     foto: './img/3.jpg',
     miniTexto: '💙',
     mensajeCompleto: 'Gracias por tu amistad y sabes que cuentas conmigo para lo que sea, se que estas loca pero las mejores personas lo estan, yo te apoyare como gen a zenku',
     autor: 'Jesus',
-    hora: "07:03"
+    hora: "02:00"
   },
   {
     foto: './img/no.jpg',
-    miniTexto: 'Recuerdos únicos 🌟',
+    miniTexto: '🌟',
     mensajeCompleto: 'Los mejores momentos están por venir. Que este año sea el inicio de algo extraordinario en tu vida.',
     autor: 'Carlos',
-    hora: "14:28"
+    hora: "02:00"
   },
   {
     foto: './img/no.jpg',
-    miniTexto: 'Momentos especiales ⭐',
+    miniTexto: '⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
     autor: 'Laura',
-    hora: "14:29"
+    hora: "02:00"
   },
   {
     foto: './img/6.jpg',
     miniTexto: '💫',
     mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
     autor: 'Servin',
-    hora: "14:30"
+    hora: "02:00"
   }
 ];
 
@@ -789,14 +796,75 @@ function crearHint(texto, y = -2) {
 /* ==========================
    FOTOS
 ========================== */
+function crearIconoWiiU(texture) {
+
+  const size = 512;
+  const radius = 80;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  // Fondo redondeado azul/morado
+  ctx.beginPath();
+  ctx.moveTo(radius, 0);
+  ctx.lineTo(size - radius, 0);
+  ctx.quadraticCurveTo(size, 0, size, radius);
+  ctx.lineTo(size, size - radius);
+  ctx.quadraticCurveTo(size, size, size - radius, size);
+  ctx.lineTo(radius, size);
+  ctx.quadraticCurveTo(0, size, 0, size - radius);
+  ctx.lineTo(0, radius);
+  ctx.quadraticCurveTo(0, 0, radius, 0);
+  ctx.closePath();
+
+  const grad = ctx.createLinearGradient(0, 0, 0, size);
+  grad.addColorStop(0, "#6b8cff");
+  grad.addColorStop(1, "#8a4fff");
+
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.save();
+  ctx.clip();
+
+  ctx.drawImage(texture.image, 0, 0, size, size);
+
+  ctx.restore();
+
+  const gloss = ctx.createLinearGradient(0, 0, 0, size * 0.5);
+  gloss.addColorStop(0, "rgba(255,255,255,0.35)");
+  gloss.addColorStop(1, "rgba(255,255,255,0)");
+
+  ctx.fillStyle = gloss;
+  ctx.fillRect(0, 0, size, size * 0.5);
+
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  ctx.stroke();
+
+  const newTexture = new THREE.CanvasTexture(canvas);
+
+  const sprite = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      map: newTexture,
+      transparent: true,
+      depthWrite: false,
+    })
+  );
+
+  sprite.material.toneMapped = false;
+
+  return sprite;
+}
+
 const spritesFotos = [];
 const loader = new THREE.TextureLoader();
 
 regalos.forEach((regalo, idx) => {
   loader.load(regalo.foto, (texture) => {
-    const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: texture, transparent: true, alphaTest: 0.1 })
-    );
+    const sprite = crearIconoWiiU(texture);
 
     const angle = (idx / regalos.length) * Math.PI * 2 + Math.random() * 0.5;
     const radius = 4 + Math.random() * 2;
@@ -850,6 +918,37 @@ function checkPhotoBroadcasts(nowMinutes) {
     }
 
     setSavedUnlocked(totalUnlocked);
+  }
+}
+function countUnlockedPhotos(nowMinutes) {
+  let total = 0;
+
+  spritesFotos.forEach(sprite => {
+    const unlock = sprite.userData.unlockTime;
+    if (unlock !== undefined && nowMinutes >= unlock) {
+      total++;
+    }
+  });
+
+  return total;
+}
+function checkOfflineNotifications() {
+  const nowMinutes = getRealMinutes();
+  const totalUnlocked = countUnlockedPhotos(nowMinutes);
+  const seen = getSeenPhotos();
+
+  // Primera visita → solo guarda estado
+  if (!localStorage.getItem("visitedBefore")) {
+    localStorage.setItem("visitedBefore", "1");
+    setSeenPhotos(totalUnlocked);
+    return;
+  }
+
+  const newOnes = totalUnlocked - seen;
+
+  if (newOnes > 0) {
+    showNotification(`✨ Han llegado ${newOnes} nuevos recuerdos`);
+    setSeenPhotos(totalUnlocked);
   }
 }
 
@@ -1169,14 +1268,19 @@ if (currentState === STATES.INTRO) {
           setTimeout(() => crearHint(h.text), h.delay)
         );
         currentState = STATES.EXPLORACION;
+        checkOfflineNotifications();
+
+        if (!sessionStorage.getItem("visit_started")) {
+          setLastVisit(Date.now());
+          sessionStorage.setItem("visit_started", "1");
+        }
+
         document.getElementById('creditsBtn').style.display = 'block';
         document.getElementById('musicBtn').style.display = 'block';
       }
   }
 
   if (currentState === STATES.EXPLORACION) {
-    // Guardar última visita
-    setLastVisit(Date.now());
 
     if (!isDragging && Math.abs(deltaX) < 0.0001 && Math.abs(deltaY) < 0.0001) {
       orbit += 0.0003;
@@ -1202,7 +1306,8 @@ if (currentState === STATES.INTRO) {
       layer.material.opacity = baseOpacity * (0.7 + pulse * 0.3);
     });
 
-
+    camera.position.x = Math.sin(orbit) * 8;
+    camera.position.z = Math.cos(orbit) * 8;
     camera.position.y = THREE.MathUtils.clamp(camera.position.y + deltaY * 1.5, -3, 3);
 
     pointLight1.position.x = Math.sin(elapsedTime * 0.5) * 5;
@@ -1305,17 +1410,30 @@ if (currentState === STATES.INTRO) {
           s.userData.baseY +
           Math.sin(now * CONFIG.photos.floatSpeed + i * 0.7) *
             CONFIG.photos.floatAmplitude;
+          // ===== TILT WII U =====
+        const dir = new THREE.Vector3();
+        dir.subVectors(camera.position, s.position);
+        s.lookAt(camera.position);
+
+        const tiltX = THREE.MathUtils.clamp(dir.y * 0.05, -0.3, 0.3);
+        const tiltY = THREE.MathUtils.clamp(dir.x * 0.05, -0.3, 0.3);
+
+        s.rotation.x = tiltX;
+        s.rotation.y = tiltY;
 
         s.scale.setScalar(
           THREE.MathUtils.lerp(0.001, CONFIG.photos.scale, progress)
         );
+          // micro pulso
+        const pulse = 1 + Math.sin(elapsedTime * 2 + i) * 0.03;
+        s.scale.multiplyScalar(pulse);
 
-        s.lookAt(camera.position);
       });
 
 
     galaxy.rotation.y += 0.00015;
   }
+
   if (skybox) {
     skybox.material.uniforms.time.value = elapsedTime;
   }
@@ -1323,6 +1441,7 @@ if (currentState === STATES.INTRO) {
     camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
   }
+
 if (Math.floor(getRealMinutes()) % 5 === 0){
   console.log("🕒 Hora simulada:", simulatedMinutes.toFixed(2));
 }
@@ -1350,4 +1469,3 @@ window.addEventListener("orientationchange", () => {
     updateRendererSize();
   }, 300);
 });
-
