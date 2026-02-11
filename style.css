@@ -1,4 +1,4 @@
-* {
+  * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -8,6 +8,7 @@ body {
   overflow: hidden;
   background: #000;
   font-family: Arial, sans-serif;
+  height: 100dvh;
 }
 
 #galaxy {
@@ -217,6 +218,20 @@ body {
   text-align: right;
   margin-top: 20px;
   font-size: 16px;
+}
+@media (max-width: 768px) {
+
+  .panel {
+    width: 85vw !important;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  .panel img {
+    max-height: 30vh;
+    object-fit: cover;
+  }
+
 }
 
 .close-btn {

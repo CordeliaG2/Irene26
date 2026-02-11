@@ -1,5 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+
 /* ==========================
    AUDIO
 ========================== */
@@ -122,6 +123,52 @@ Object.values(uiSounds).forEach(s => {
   s.volume = 1.0;
 });
 
+function horaToMinutes(hora) {
+  if (!hora) return Infinity; // seguridad
+  const [h, m] = hora.split(":").map(Number);
+  return h * 60 + m;
+}
+function getRealMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+/* ==========================
+   NOTIFICACIONES
+========================== */
+
+const STORAGE_LAST_VISIT = "galaxy_last_visit";
+const STORAGE_UNLOCKED = "galaxy_unlocked_count";
+
+function getLastVisit() {
+  return parseInt(localStorage.getItem(STORAGE_LAST_VISIT) || "0");
+}
+
+function setLastVisit(time) {
+  localStorage.setItem(STORAGE_LAST_VISIT, time.toString());
+}
+
+function getSavedUnlocked() {
+  return parseInt(localStorage.getItem(STORAGE_UNLOCKED) || "0");
+}
+
+function setSavedUnlocked(count) {
+  localStorage.setItem(STORAGE_UNLOCKED, count.toString());
+}
+
+function showNotification(text) {
+  const el = document.getElementById("notification");
+  if (!el) return;
+
+  el.textContent = text;
+  el.classList.add("show");
+
+  setTimeout(() => {
+    el.classList.remove("show");
+  }, 5000);
+}
+
+
 /* ==========================
    DATOS DE REGALOS
 ========================== */
@@ -130,39 +177,61 @@ const regalos = [
     foto: './img/1.png',
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
-    autor: 'Mari'
+    autor: 'Mari',
+    hora: "07:00"
   },
   {
     foto: './img/2.png',
     miniTexto: '🎁',
     mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
-    autor: 'lis'
+    autor: 'lis',
+    hora: "07:30"
   },
   {
-    foto: './img/no.jpg',
-    miniTexto: 'Para ti 💙',
-    mensajeCompleto: 'Que cada momento de este nuevo año te traiga alegría, éxito y mucho amor. ¡Feliz cumpleaños!',
-    autor: 'Ana'
+    foto: './img/3.jpg',
+    miniTexto: '💙',
+    mensajeCompleto: 'Gracias por tu amistad y sabes que cuentas conmigo para lo que sea, se que estas loca pero las mejores personas lo estan, yo te apoyare como gen a zenku',
+    autor: 'Jesus',
+    hora: "07:03"
   },
   {
     foto: './img/no.jpg',
     miniTexto: 'Recuerdos únicos 🌟',
     mensajeCompleto: 'Los mejores momentos están por venir. Que este año sea el inicio de algo extraordinario en tu vida.',
-    autor: 'Carlos'
+    autor: 'Carlos',
+    hora: "14:28"
   },
   {
     foto: './img/no.jpg',
     miniTexto: 'Momentos especiales ⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
-    autor: 'Laura'
+    autor: 'Laura',
+    hora: "14:29"
   },
   {
     foto: './img/6.jpg',
     miniTexto: '💫',
     mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
-    autor: 'Servin'
+    autor: 'Servin',
+    hora: "14:30"
   }
 ];
+
+/* ==========================
+   SIMULATED CLOCK (CORRECTO)
+========================== */
+
+let simulatedMinutes = 11 * 60 + 50; // 11:50
+let lastSimTime = performance.now();
+
+function updateSimulatedClock() {
+  const now = performance.now();
+  const deltaMs = now - lastSimTime;
+  lastSimTime = now;
+
+  // 1 segundo real = 1 minuto simulado
+  simulatedMinutes += deltaMs / 1000;
+}
 
 /* ==========================
    ESTADOS
@@ -314,11 +383,35 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 camera.position.z = 12;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false});
-renderer.setSize(window.innerWidth, window.innerHeight);
+
+function getViewportSize() {
+  const w = window.visualViewport?.width || window.innerWidth;
+  const h = window.visualViewport?.height || window.innerHeight;
+  return { w, h };
+}
+
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 0.9;
 renderer.setClearColor(0x050008, 1);
+
+function adaptCameraForMobile() {
+  const isMobile = window.innerWidth < 900;
+  const portrait = window.innerHeight > window.innerWidth;
+
+  if (isMobile && portrait) {
+    camera.position.z = 16; // alejar
+    camera.fov = 85;        // abrir FOV
+  } else if (isMobile) {
+    camera.position.z = 13;
+    camera.fov = 75;
+  } else {
+    camera.position.z = 12;
+    camera.fov = 75;
+  }
+
+  camera.updateProjectionMatrix();
+}
 
 /* ==========================
    RAYCASTER
@@ -709,10 +802,10 @@ regalos.forEach((regalo, idx) => {
     const radius = 4 + Math.random() * 2;
     const baseY = (Math.random() - 0.5) * 2;
 
-    sprite.userData = { angle, radius, baseY, index: idx, isPhoto: true, regalo: regalo };
+    sprite.userData = { angle, radius, baseY, index: idx, isPhoto: true, regalo: regalo,  appearTime: null, unlocked: false, broadcastMinute: horaToMinutes(regalo.hora) };
     sprite.scale.set(0.001, 0.001, 1);
     sprite.position.set(Math.cos(angle) * radius, baseY, Math.sin(angle) * radius);
-    sprite.visible = true;
+    sprite.visible = false;
     sprite.material.opacity = 0;
     sprite.scale.multiplyScalar(0.5);
     sprite.userData.appearTime = null;
@@ -721,6 +814,44 @@ regalos.forEach((regalo, idx) => {
     scene.add(sprite);
   });
 });
+
+function checkPhotoBroadcasts(nowMinutes) {
+  let unlockedThisFrame = 0;
+  spritesFotos.forEach(sprite => {
+    if (sprite.userData.unlocked) return;
+
+    if (nowMinutes >= sprite.userData.broadcastMinute) {
+      sprite.userData.unlocked = true;
+
+      // Dispara la animación normal
+      sprite.visible = true;
+      sprite.userData.appearTime = Date.now();
+      unlockedThisFrame++;
+
+      console.log("📡 Foto liberada:", sprite.userData.regalo.autor);
+    }
+  });
+    // SISTEMA DE NOTIFICACION
+  // ==========================
+  if (unlockedThisFrame > 0) {
+    const totalUnlocked = spritesFotos.filter(s => s.userData.unlocked).length;
+    const savedUnlocked = getSavedUnlocked();
+    const lastVisit = getLastVisit();
+
+    // Si NO es primera visita
+    if (lastVisit !== 0 && totalUnlocked > savedUnlocked) {
+      const nuevos = totalUnlocked - savedUnlocked;
+
+      showNotification(
+        nuevos === 1
+          ? "✨ Ha llegado un nuevo recuerdo"
+          : `✨ Han llegado ${nuevos} nuevos recuerdos`
+      );
+    }
+
+    setSavedUnlocked(totalUnlocked);
+  }
+}
 
 /* ==========================
    INTRO
@@ -880,7 +1011,7 @@ function onCanvasClick(event) {
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(spritesFotos);
+  const intersects = raycaster.intersectObjects(spritesFotos.filter(s => s.userData.unlocked));
 
   if (intersects.length > 0) {
     const clickedSprite = intersects[0].object;
@@ -959,6 +1090,10 @@ function animate(time) {
   lastFrameTime = time;
   const now = Date.now();
   const elapsedTime = clock.getElapsedTime();
+  const nowMinutes = getRealMinutes();
+  checkPhotoBroadcasts(nowMinutes);
+
+
 
 if (currentState === STATES.INTRO) {
   const t = now - introStart;
@@ -1040,6 +1175,9 @@ if (currentState === STATES.INTRO) {
   }
 
   if (currentState === STATES.EXPLORACION) {
+    // Guardar última visita
+    setLastVisit(Date.now());
+
     if (!isDragging && Math.abs(deltaX) < 0.0001 && Math.abs(deltaY) < 0.0001) {
       orbit += 0.0003;
     } else {
@@ -1183,8 +1321,11 @@ if (currentState === STATES.INTRO) {
     skybox.material.uniforms.time.value = elapsedTime;
   }
 
-  camera.lookAt(0, 0, 0);
-  renderer.render(scene, camera);
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+if (Math.floor(getRealMinutes()) % 5 === 0){
+  console.log("🕒 Hora simulada:", simulatedMinutes.toFixed(2));
 }
 
 animate();
@@ -1192,8 +1333,22 @@ animate();
 /* ==========================
    RESIZE
 ========================== */
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+function updateRendererSize() {
+  const { w, h } = getViewportSize();
+
+  camera.aspect = w / h;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  adaptCameraForMobile();
+
+  renderer.setSize(w, h, false);
+}
+window.addEventListener("resize", updateRendererSize);
+window.visualViewport?.addEventListener("resize", updateRendererSize);
+updateRendererSize();
+
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    updateRendererSize();
+  }, 300);
 });
+
