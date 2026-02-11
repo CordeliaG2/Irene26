@@ -289,7 +289,7 @@ function createStartScreen() {
   startScreen.id = 'startScreen';
   startScreen.innerHTML = `
     <div class="start-content">
-      <h1>🌌 Te doy la bienvenida al Irene Galaxy Museum</h1>
+      <h1>🌌 Te doy la bienvenida al Memory Galaxy Museum</h1>
       <p>Un regalo especial</p>
       <button id="startButton" class="start-btn">
         ▶ Comenzar
@@ -1202,8 +1202,7 @@ if (currentState === STATES.INTRO) {
       layer.material.opacity = baseOpacity * (0.7 + pulse * 0.3);
     });
 
-    camera.position.x = Math.sin(orbit) * 8;
-    camera.position.z = Math.cos(orbit) * 8;
+
     camera.position.y = THREE.MathUtils.clamp(camera.position.y + deltaY * 1.5, -3, 3);
 
     pointLight1.position.x = Math.sin(elapsedTime * 0.5) * 5;
