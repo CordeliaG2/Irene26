@@ -1532,7 +1532,6 @@ function animate(time) {
 if (currentState === STATES.INTRO) {
   const t = now - introStart;
   const currentIntroText = introTexts[introIndex];
-  showBigHint("PRUEBA");
 
 
   const fadeInEnd = currentIntroText.fadeInDuration;
