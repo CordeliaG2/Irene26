@@ -40,7 +40,7 @@ body {
 }
 
 /* Botones de control */
-#creditsBtn, #musicBtn, #statsBtn, #themesBtn, #modesBtn, #achievementsBtn {
+#statsBtn, #themesBtn, #modesBtn, #achievementsBtn {
   position: fixed;
   bottom: 30px;
   padding: 12px 24px;
@@ -55,15 +55,37 @@ body {
   z-index: 100;
   display: none;
 }
+/* Botones de control */
+#creditsBtn, #musicBtn {
+  position: fixed;
+  bottom: 30px;
+  padding: 15px 30px;
+  background: rgba(74, 158, 255, 0.2);
+  border: 2px solid #87ceeb;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  z-index: 100;
+  display: none;
+}
 
 #creditsBtn {
   left: 30px;
 }
 
 #musicBtn {
-  left: 160px;
-  font-size: 20px;
-  padding: 10px 18px;
+  right: 30px;
+  font-size: 24px;
+  padding: 12px 20px;
+}
+
+#creditsBtn:hover, #musicBtn:hover {
+  background: rgba(135, 206, 235, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(135, 206, 235, 0.3);
 }
 
 #statsBtn {
