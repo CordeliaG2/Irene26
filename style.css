@@ -391,6 +391,16 @@ body {
     font-size: 14px;
     padding: 14px 20px;
   }
+  
+  /* Mejorar visibilidad del canvas en móvil */
+  #galaxy {
+    filter: brightness(1.2) contrast(1.1) saturate(1.1);
+  }
+  
+  /* Asegurar que el hint no interfiera con la galaxia */
+  .hud-hint {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .close-btn {
@@ -438,8 +448,8 @@ body {
 
   #creditsBtn, #musicBtn {
     bottom: 20px;
-    padding: 12px 20px;
-    font-size: 14px;
+    padding: 8px 12px;
+    font-size: 18px;
   }
 
   #creditsBtn {
@@ -448,6 +458,15 @@ body {
 
   #musicBtn {
     right: 20px;
+    /* Botón más pequeño en móvil */
+    font-size: 20px;
+    padding: 8px 12px;
+    min-width: auto;
+  }
+  
+  /* Ocultar botones que no son esenciales en móvil */
+  #statsBtn, #themesBtn, #modesBtn, #achievementsBtn {
+    display: none !important;
   }
 }
 /* Pantalla de Inicio */
