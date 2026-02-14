@@ -202,10 +202,10 @@ const regalos = [
     hora: "02:00"
   },
   {
-    foto: './img/no.jpg',
+    foto: './img/4.jpg',
     miniTexto: '🌟',
-    mensajeCompleto: 'Los mejores momentos están por venir. Que este año sea el inicio de algo extraordinario en tu vida.',
-    autor: 'Carlos',
+    mensajeCompleto: '¡Feliz cumpleaños, Irene! No quería dejar pasar el día sin decirte que, aunque llevamos poco tiempo de conocernos, me da mucho gusto haber coincidido contigo. Es curioso cómo en tan poco tiempo se puede empezar a construir una amistad tan auténtica, y valoro mucho la confianza que hemos ido ganando. Me parece genial que, más allá de los estudios, seamos personas con las que se puede platicar y compartir momentos de calidad como el de hoy.Me la estoy pasando muy bien hoy tomando algo con todos y conociéndonos más a fondo fuera del entorno de siempre. Creo que son estos momentos de convivencia los que realmente cuentan y los que hacen que una amistad crezca de verdad, dejando de lado por un rato las responsabilidades para simplemente disfrutar. Me agrada mucho tu forma de ser y la vibra que transmites, y me da gusto que estemos compartiendo este festejo entre amigos y con la maestra.Te deseo un año increíble, lleno de éxitos en todo lo que te propongas y de muchos más momentos compartidos como este. Espero que este sea solo el primero de muchos cumpleaños que me toque festejar contigo ahora que somos amigos. Disfruta muchísimo tu día, sigue siendo esa gran persona que eres y cuenta conmigo para lo que necesites en este camino que estamos recorriendo. ¡Muchas felicidades, Irene, te mando un fuerte abrazo!',
+    autor: 'JuanMa',
     hora: "02:00"
   },
   {
