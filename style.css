@@ -1,4 +1,4 @@
-  * {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -40,15 +40,15 @@ body {
 }
 
 /* Botones de control */
-#creditsBtn, #musicBtn {
+#creditsBtn, #musicBtn, #statsBtn, #themesBtn, #modesBtn, #achievementsBtn {
   position: fixed;
   bottom: 30px;
-  padding: 15px 30px;
+  padding: 12px 24px;
   background: rgba(74, 158, 255, 0.2);
   border: 2px solid #87ceeb;
   border-radius: 25px;
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
@@ -61,15 +61,77 @@ body {
 }
 
 #musicBtn {
-  right: 30px;
-  font-size: 24px;
-  padding: 12px 20px;
+  left: 160px;
+  font-size: 20px;
+  padding: 10px 18px;
 }
 
-#creditsBtn:hover, #musicBtn:hover {
+#statsBtn {
+  right: 30px;
+}
+
+#themesBtn {
+  right: 140px;
+}
+
+#modesBtn {
+  right: 250px;
+}
+
+#achievementsBtn {
+  right: 360px;
+}
+
+#creditsBtn:hover, #musicBtn:hover, #statsBtn:hover, #themesBtn:hover, #modesBtn:hover, #achievementsBtn:hover {
   background: rgba(135, 206, 235, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 5px 20px rgba(135, 206, 235, 0.3);
+}
+
+/* Control de Volumen */
+.volume-control {
+  position: fixed;
+  bottom: 30px;
+  left: 230px;
+  padding: 12px 20px;
+  background: rgba(74, 158, 255, 0.2);
+  border: 2px solid #87ceeb;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+}
+
+#volumeSlider {
+  width: 100px;
+  height: 4px;
+  background: rgba(135, 206, 235, 0.3);
+  outline: none;
+  border-radius: 2px;
+  -webkit-appearance: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #87ceeb;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#volumeSlider::-webkit-slider-thumb:hover {
+  background: #4a9eff;
+  transform: scale(1.2);
+}
+
+#volumeValue {
+  color: #87ceeb;
+  font-size: 12px;
+  min-width: 35px;
 }
 
 /* Modal de foto */
@@ -255,6 +317,81 @@ body {
   }
 
 }
+.big-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 15%;
+  transform: translateX(-50%) scale(0.8);
+  opacity: 0;
+
+  padding: 22px 40px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+
+  color: #fff;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 25px;
+  border: 2px solid rgba(135, 206, 235, 0.5);
+
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 60px rgba(135, 206, 235, 0.4);
+
+  transition: all 0.5s ease;
+  pointer-events: none;
+
+  z-index: 999999; /* 🔥 esto es CLAVE */
+}
+
+.big-hint.visible {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ==========================
+   HUD HINT ESTÁTICO
+========================== */
+.hud-hint {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  
+  padding: 16px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: right;
+  
+  color: #fff;
+  background: rgba(74, 158, 255, 0.25);
+  border-radius: 20px;
+  border: 2px solid rgba(135, 206, 235, 0.4);
+  
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 30px rgba(135, 206, 235, 0.2);
+  
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.4s ease;
+  
+  pointer-events: none;
+  z-index: 500;
+}
+
+.hud-hint.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .hud-hint {
+    top: 20px;
+    right: 20px;
+    left: 20px;
+    text-align: center;
+    font-size: 14px;
+    padding: 14px 20px;
+  }
+}
 
 .close-btn {
   position: absolute;
@@ -382,5 +519,325 @@ body {
   .start-btn {
     padding: 14px 28px;
     font-size: 16px;
+  }
+}
+
+/* ==========================
+   MODALES NUEVOS
+========================== */
+#statsModal, #themesModal, #modesModal, #achievementsModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#statsModal.active, #themesModal.active, #modesModal.active, #achievementsModal.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Modal de Estadísticas */
+.stats-content {
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(74, 158, 255, 0.1);
+  border-radius: 20px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  animation: modalZoom 0.4s ease;
+}
+
+.stats-content h2 {
+  color: #87ceeb;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(135, 206, 235, 0.5);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid rgba(135, 206, 235, 0.2);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(135, 206, 235, 0.1);
+  transform: translateY(-5px);
+  border-color: rgba(135, 206, 235, 0.5);
+}
+
+.stat-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #87ceeb;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Modal de Temas */
+.themes-content {
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(74, 158, 255, 0.1);
+  border-radius: 20px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  animation: modalZoom 0.4s ease;
+}
+
+.themes-content h2 {
+  color: #87ceeb;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(135, 206, 235, 0.5);
+}
+
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.theme-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+  transform: translateY(-5px);
+}
+
+.theme-preview {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  transition: all 0.3s ease;
+}
+
+.theme-card:hover .theme-preview {
+  border-color: #87ceeb;
+  box-shadow: 0 0 20px rgba(135, 206, 235, 0.5);
+}
+
+.theme-name {
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Modal de Modos */
+.modes-content {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(74, 158, 255, 0.1);
+  border-radius: 20px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  animation: modalZoom 0.4s ease;
+}
+
+.modes-content h2 {
+  color: #87ceeb;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(135, 206, 235, 0.5);
+}
+
+.modes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mode-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid rgba(135, 206, 235, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-card:hover {
+  background: rgba(135, 206, 235, 0.15);
+  border-color: #87ceeb;
+  transform: translateX(10px);
+}
+
+.mode-icon {
+  font-size: 48px;
+}
+
+.mode-info h3 {
+  color: #87ceeb;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.mode-info p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+/* Modal de Logros */
+.achievements-content {
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(74, 158, 255, 0.1);
+  border-radius: 20px;
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  animation: modalZoom 0.4s ease;
+}
+
+.achievements-content h2 {
+  color: #87ceeb;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(135, 206, 235, 0.5);
+}
+
+.achievements-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.achievement-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid rgba(135, 206, 235, 0.2);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.achievement-card.unlocked {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.achievement-card.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.achievement-card:hover {
+  transform: scale(1.05);
+}
+
+.achievement-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.achievement-name {
+  color: #87ceeb;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.achievement-desc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .themes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .achievements-list {
+    grid-template-columns: 1fr;
+  }
+  
+  #creditsBtn, #statsBtn, #themesBtn, #modesBtn, #achievementsBtn {
+    bottom: auto;
+    top: 20px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  
+  #creditsBtn {
+    left: 10px;
+    top: 20px;
+  }
+  
+  #musicBtn {
+    left: 10px;
+    top: 60px;
+  }
+  
+  #statsBtn {
+    right: 10px;
+    top: 20px;
+  }
+  
+  #themesBtn {
+    right: 10px;
+    top: 60px;
+  }
+  
+  #modesBtn {
+    right: 10px;
+    top: 100px;
+  }
+  
+  #achievementsBtn {
+    right: 10px;
+    top: 140px;
+  }
+  
+  .volume-control {
+    display: none !important;
   }
 }

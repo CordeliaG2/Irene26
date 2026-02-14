@@ -175,6 +175,47 @@ function showNotification(text) {
   }, 5000);
 }
 
+function showBigHint(text, delay = 0) {
+  setTimeout(() => {
+    const hint = document.createElement("div");
+    hint.className = "big-hint";
+    hint.innerText = text;
+
+    document.body.appendChild(hint);
+
+    requestAnimationFrame(() => {
+      hint.classList.add("visible");
+    });
+
+    setTimeout(() => {
+      hint.classList.remove("visible");
+      setTimeout(() => hint.remove(), 800);
+    }, 5000);
+
+  }, delay);
+}
+
+/* ==========================
+   HINT HUD ESTÁTICO
+========================== */
+function showHudHint(text, duration = 5000) {
+  const hint = document.createElement("div");
+  hint.className = "hud-hint";
+  hint.innerText = text;
+
+  document.body.appendChild(hint);
+
+  requestAnimationFrame(() => {
+    hint.classList.add("visible");
+  });
+
+  setTimeout(() => {
+    hint.classList.remove("visible");
+    setTimeout(() => hint.remove(), 500);
+  }, duration);
+  
+  console.log('💡 HUD Hint mostrado:', text);
+}
 
 /* ==========================
    DATOS DE REGALOS
@@ -185,14 +226,14 @@ const regalos = [
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
     autor: 'Mari',
-    hora: "12:00"
+    hora: "02:00"
   },
   {
     foto: './img/2.png',
     miniTexto: '🎁',
     mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
     autor: 'lis',
-    hora: "12:05"
+    hora: "02:05"
   },
   {
     foto: './img/3.jpg',
@@ -209,14 +250,21 @@ const regalos = [
     hora: "02:00"
   },
   {
-    foto: './img/no.jpg',
+    foto: './img/5.jpg',
     miniTexto: '⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
-    autor: 'Laura',
+    autor: 'Sam Urios',
     hora: "02:00"
   },
   {
     foto: './img/6.jpg',
+    miniTexto: '💫',
+    mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
+    autor: 'Servin',
+    hora: "02:00"
+  },
+  {
+    foto: './img/no.jpg',
     miniTexto: '💫',
     mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
     autor: 'Servin',
@@ -759,7 +807,9 @@ const hints = [
   { text: "Algunas guardan algo especial", delay: 12000 }
 ];
 
-const hintSprites = [];
+let hintSprites = [];
+let sparkleParticles = [];
+let starTrailParticles = [];
 function crearHint(texto, y = -2) {
   const c = document.createElement("canvas");
   c.width = 1024;
@@ -772,9 +822,13 @@ function crearHint(texto, y = -2) {
   ctx.textBaseline = "middle";
   ctx.fillText(texto, c.width / 2, c.height / 2);
 
+  const texture = new THREE.CanvasTexture(c);
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
   const sprite = new THREE.Sprite(
     new THREE.SpriteMaterial({
-      map: new THREE.CanvasTexture(c),
+      map: texture,
       transparent: true,
       opacity: 0,
       depthTest: false,
@@ -791,6 +845,125 @@ function crearHint(texto, y = -2) {
 
   scene.add(sprite);
   hintSprites.push(sprite);
+  
+  console.log('✨ Hint 3D creado:', texto);
+}
+
+/* ==========================
+   EFECTOS VISUALES
+========================== */
+function createSparkleEffect(position) {
+  // Crear más partículas para efecto más llamativo
+  for (let i = 0; i < 15; i++) {
+    const particle = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        // Colores más saturados y brillantes
+        color: new THREE.Color().setHSL(0.55 + Math.random() * 0.05, 1.0, 0.65),
+        transparent: true,
+        opacity: 1,
+        blending: THREE.AdditiveBlending,
+        depthTest: false
+      })
+    );
+    
+    particle.position.copy(position);
+    // Mayor dispersión para efecto más visible
+    particle.position.x += (Math.random() - 0.5) * 0.8;
+    particle.position.y += (Math.random() - 0.5) * 0.8;
+    particle.position.z += (Math.random() - 0.5) * 0.8;
+    
+    // Partículas más grandes
+    particle.scale.setScalar(0.2 + Math.random() * 0.15);
+    particle.userData = {
+      vx: (Math.random() - 0.5) * 0.03,
+      vy: (Math.random() - 0.5) * 0.03,
+      vz: (Math.random() - 0.5) * 0.03,
+      // Vida más larga
+      life: 50 + Math.random() * 30,
+      age: 0,
+      // Añadir escala inicial para animación
+      initialScale: 0.2 + Math.random() * 0.15
+    };
+    
+    scene.add(particle);
+    sparkleParticles.push(particle);
+  }
+}
+
+function createStarTrail() {
+  if (Math.random() > 0.3) return; // No crear siempre
+  
+  const trail = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      color: 0x87ceeb,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending,
+      depthTest: false
+    })
+  );
+  
+  trail.position.copy(camera.position);
+  trail.scale.setScalar(0.05);
+  trail.userData = {
+    life: 20,
+    age: 0
+  };
+  
+  scene.add(trail);
+  starTrailParticles.push(trail);
+}
+
+function updateParticleEffects() {
+  // Actualizar sparkles
+  sparkleParticles = sparkleParticles.filter(particle => {
+    particle.userData.age++;
+    
+    particle.position.x += particle.userData.vx;
+    particle.position.y += particle.userData.vy;
+    particle.position.z += particle.userData.vz;
+    
+    const lifeRatio = particle.userData.age / particle.userData.life;
+    
+    // Fade out más suave
+    if (lifeRatio < 0.2) {
+      // Fade in inicial
+      particle.material.opacity = lifeRatio * 5;
+    } else if (lifeRatio > 0.7) {
+      // Fade out final
+      particle.material.opacity = (1 - lifeRatio) * 3.33;
+    } else {
+      // Máxima opacidad en el medio
+      particle.material.opacity = 1;
+    }
+    
+    // Efecto de pulso para más visibilidad
+    const pulseScale = 1 + Math.sin(particle.userData.age * 0.2) * 0.3;
+    particle.scale.setScalar(particle.userData.initialScale * pulseScale);
+    
+    if (particle.userData.age >= particle.userData.life) {
+      scene.remove(particle);
+      particle.material.dispose();
+      return false;
+    }
+    return true;
+  });
+  
+  // Actualizar trails
+  starTrailParticles = starTrailParticles.filter(trail => {
+    trail.userData.age++;
+    
+    const lifeRatio = trail.userData.age / trail.userData.life;
+    trail.material.opacity = 0.6 * (1 - lifeRatio);
+    trail.scale.multiplyScalar(1.1);
+    
+    if (trail.userData.age >= trail.userData.life) {
+      scene.remove(trail);
+      trail.material.dispose();
+      return false;
+    }
+    return true;
+  });
 }
 
 /* ==========================
@@ -986,7 +1159,7 @@ function crearTextoIntro(texto, esPequeno = false) {
 
 const introTexts = [
   { 
-    text: "Sony Computer Entertainment presents", 
+    text: "Szk Computer Entertainment presents", 
     small: true, 
     sound: playstationSound,
     fadeInDuration: 1500,
@@ -994,7 +1167,7 @@ const introTexts = [
     fadeOutDuration: 1000
   },
   { 
-    text: "A Universal Interactive Studios Production", 
+    text: "GumaDev Interactive Studios Production", 
     small: false,
     fadeInDuration: 1500,
     holdDuration: 5000,
@@ -1023,32 +1196,125 @@ setTimeout(() => {
 ========================== */
 window.openModal = function(regalo) {
   modalOpen = true;
-  canvas.classList.add('blurred');
   playUISound('open');
-  document.getElementById('modalPhoto').src = regalo.foto;
+  
+  const modal = document.getElementById('photoModal');
+  const photo = document.getElementById('modalPhoto');
+  const messageDiv = document.querySelector('.modal-message');
+  
+  // Configurar contenido
+  photo.src = regalo.foto;
   document.getElementById('modalTitle').textContent = regalo.miniTexto;
   document.getElementById('modalMessage').textContent = regalo.mensajeCompleto;
   document.getElementById('modalAuthor').textContent = '— ' + regalo.autor;
-  document.getElementById('photoModal').classList.add('active');
+  
+  // Blur del fondo
+  canvas.classList.add('blurred');
+  modal.classList.add('active');
+  
+  // Animaciones con GSAP
+  if (typeof gsap !== 'undefined') {
+    // Reset inicial
+    gsap.set(photo, { scale: 0.7, opacity: 0, rotationY: -15 });
+    gsap.set(messageDiv, { x: 50, opacity: 0 });
+    
+    // Animar foto
+    gsap.to(photo, {
+      scale: 1,
+      opacity: 1,
+      rotationY: 0,
+      duration: 0.6,
+      ease: "back.out(1.2)"
+    });
+    
+    // Animar mensaje (con delay)
+    gsap.to(messageDiv, {
+      x: 0,
+      opacity: 1,
+      duration: 0.5,
+      delay: 0.3,
+      ease: "power2.out"
+    });
+  }
 };
 
 window.closeModal = function() {
-  modalOpen = false;
+  const modal = document.getElementById('photoModal');
+  const photo = document.getElementById('modalPhoto');
+  const messageDiv = document.querySelector('.modal-message');
+  
   playUISound('back');
-  canvas.classList.remove('blurred');
-  document.getElementById('photoModal').classList.remove('active');
+  
+  // Animación de salida
+  if (typeof gsap !== 'undefined') {
+    gsap.to(photo, {
+      scale: 0.8,
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in"
+    });
+    
+    gsap.to(messageDiv, {
+      x: 30,
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        modalOpen = false;
+        canvas.classList.remove('blurred');
+        modal.classList.remove('active');
+      }
+    });
+  } else {
+    modalOpen = false;
+    canvas.classList.remove('blurred');
+    modal.classList.remove('active');
+  }
 };
+
 
 window.openCredits = function() {
   modalOpen = true;
+  const modal = document.getElementById('creditsModal');
+  const content = document.querySelector('.credits-content');
+  
   canvas.classList.add('blurred');
-  document.getElementById('creditsModal').classList.add('active');
+  modal.classList.add('active');
+  
+  if (typeof gsap !== 'undefined') {
+    gsap.set(content, { scale: 0.8, opacity: 0, y: 30 });
+    gsap.to(content, {
+      scale: 1,
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: "back.out(1.5)"
+    });
+  }
 };
 
 window.closeCredits = function() {
-  modalOpen = false;
-  canvas.classList.remove('blurred');
-  document.getElementById('creditsModal').classList.remove('active');
+  const modal = document.getElementById('creditsModal');
+  const content = document.querySelector('.credits-content');
+  
+  if (typeof gsap !== 'undefined') {
+    gsap.to(content, {
+      scale: 0.9,
+      opacity: 0,
+      y: -20,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        modalOpen = false;
+        canvas.classList.remove('blurred');
+        modal.classList.remove('active');
+      }
+    });
+  } else {
+    modalOpen = false;
+    canvas.classList.remove('blurred');
+    modal.classList.remove('active');
+  }
 };
 function playUISound(name) {
   if (!uiSounds[name]) return;
@@ -1115,10 +1381,45 @@ function onCanvasClick(event) {
   if (intersects.length > 0) {
     const clickedSprite = intersects[0].object;
     if (clickedSprite.userData.isPhoto) {
+      // Crear efecto de sparkle al hacer click
+      createSparkleEffect(clickedSprite.position);
+      
+      // Vibración en móvil
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+      }
+      
       window.openModal(clickedSprite.userData.regalo);
     }
   }
 }
+
+// Hover detection para efectos visuales
+let lastHoveredPhoto = null;
+
+function onCanvasHover(event) {
+  if (currentState !== STATES.EXPLORACION || modalOpen) return;
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(spritesFotos.filter(s => s.userData.unlocked));
+
+  if (intersects.length > 0) {
+    const hoveredSprite = intersects[0].object;
+    if (hoveredSprite !== lastHoveredPhoto) {
+      // Efecto sparkle sutil al hacer hover
+      createSparkleEffect(hoveredSprite.position);
+      lastHoveredPhoto = hoveredSprite;
+      canvas.style.cursor = 'pointer';
+    }
+  } else {
+    lastHoveredPhoto = null;
+    canvas.style.cursor = 'grab';
+  }
+}
+
 
 canvas.addEventListener("mousedown", () => {
   isDragging = true;
@@ -1127,7 +1428,12 @@ canvas.addEventListener("mousedown", () => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (isDragging) updateInput(e.clientX, e.clientY);
+  if (isDragging) {
+    updateInput(e.clientX, e.clientY);
+  } else {
+    // Detectar hover cuando no está draggeando
+    onCanvasHover(e);
+  }
 });
 
 canvas.addEventListener("mouseup", (e) => {
@@ -1146,21 +1452,50 @@ canvas.addEventListener("mouseleave", () => {
 });
 
 canvas.addEventListener("touchstart", (e) => {
-  isDragging = true;
-  if (e.touches.length) {
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
+  // Detectar pinch (2 dedos)
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastPinchDistance = Math.sqrt(dx * dx + dy * dy);
+    isDragging = false; // No drag cuando hay pinch
+  } else {
+    isDragging = true;
+    if (e.touches.length) {
+      lastX = e.touches[0].clientX;
+      lastY = e.touches[0].clientY;
+    }
   }
 });
 
+let lastPinchDistance = 0;
+
 canvas.addEventListener("touchmove", (e) => {
   e.preventDefault();
-  if (e.touches.length && isDragging) {
+  
+  // Pinch zoom con 2 dedos
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    if (lastPinchDistance > 0) {
+      const delta = distance - lastPinchDistance;
+      camera.fov = THREE.MathUtils.clamp(camera.fov - delta * 0.1, 40, 100);
+      camera.updateProjectionMatrix();
+    }
+    
+    lastPinchDistance = distance;
+  } else if (e.touches.length && isDragging) {
     updateInput(e.touches[0].clientX, e.touches[0].clientY);
   }
 });
 
 canvas.addEventListener("touchend", (e) => {
+  // Reset pinch
+  if (e.touches.length < 2) {
+    lastPinchDistance = 0;
+  }
+  
   if (!isDragging || (Math.abs(deltaX) < 0.01 && Math.abs(deltaY) < 0.01)) {
     if (e.changedTouches.length) {
       const touch = e.changedTouches[0];
@@ -1197,7 +1532,9 @@ function animate(time) {
 if (currentState === STATES.INTRO) {
   const t = now - introStart;
   const currentIntroText = introTexts[introIndex];
-  
+  showBigHint("PRUEBA");
+
+
   const fadeInEnd = currentIntroText.fadeInDuration;
   const holdEnd = fadeInEnd + currentIntroText.holdDuration;
   const fadeOutEnd = holdEnd + currentIntroText.fadeOutDuration;
@@ -1253,7 +1590,7 @@ if (currentState === STATES.INTRO) {
       });
     }
 
-      if (p === 1) {
+      if (p >= 1 && currentState === STATES.ENTRADA) {
         const baseTime = Date.now();
 
         textos.forEach((t, i) => {
@@ -1267,6 +1604,20 @@ if (currentState === STATES.INTRO) {
         hints.forEach(h =>
           setTimeout(() => crearHint(h.text), h.delay)
         );
+        
+        // Hints HUD estáticos (como botones, se quedan fijos en pantalla)
+        const isMobile = window.innerWidth < 768;
+        
+        if (isMobile) {
+          setTimeout(() => showHudHint("👉 Desliza para explorar la galaxia"), 3000);
+          setTimeout(() => showHudHint("📸 Toca las fotos para ver los mensajes"), 8000);
+          setTimeout(() => showHudHint("🎵 Usa el botón de música para ajustar el volumen"), 13000);
+        } else {
+          setTimeout(() => showHudHint("🖱️ Haz clic y arrastra para explorar la galaxia"), 3000);
+          setTimeout(() => showHudHint("✨ Haz clic en las fotos para ver los mensajes"), 8000);
+          setTimeout(() => showHudHint("🎵 Usa el botón de música para ajustar el volumen"), 13000);
+        }
+        
         currentState = STATES.EXPLORACION;
         checkOfflineNotifications();
 
@@ -1274,6 +1625,20 @@ if (currentState === STATES.INTRO) {
           setLastVisit(Date.now());
           sessionStorage.setItem("visit_started", "1");
         }
+        if (!localStorage.getItem("tutorialShown")) {
+
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile) {
+          showBigHint("👉 DESLIZA PARA MOVER LA GALAXIA", 500);
+          showBigHint("📸 TOCA LAS FOTOS PARA VER LOS RECUERDOS", 2500);
+        } else {
+          showBigHint("🖱 HAZ CLICK Y ARRASTRA PARA MOVER LA GALAXIA", 500);
+          showBigHint("✨ HAZ CLICK EN LAS FOTOS PARA ABRIR RECUERDOS", 2500);
+        }
+
+        localStorage.setItem("tutorialShown", "1");
+      }
 
         document.getElementById('creditsBtn').style.display = 'block';
         document.getElementById('musicBtn').style.display = 'block';
@@ -1290,6 +1655,14 @@ if (currentState === STATES.INTRO) {
 
     deltaX *= 0.92;
     deltaY *= 0.92;
+    
+    // Actualizar efectos de partículas
+    updateParticleEffects();
+    
+    // Crear star trail cuando hay movimiento rápido
+    if (Math.abs(deltaX) > 0.01 || Math.abs(deltaY) > 0.01) {
+      createStarTrail();
+    }
 
     galaxy.rotation.y = -orbit * 0.3;
     galaxy.rotation.x = Math.sin(orbit * 0.15) * 0.08;
@@ -1360,6 +1733,7 @@ if (currentState === STATES.INTRO) {
     });
 
 
+
     textos.forEach((t, i) => {
       if (t.userData.appearTime === null) return;
 
@@ -1410,16 +1784,24 @@ if (currentState === STATES.INTRO) {
           s.userData.baseY +
           Math.sin(now * CONFIG.photos.floatSpeed + i * 0.7) *
             CONFIG.photos.floatAmplitude;
-          // ===== TILT WII U =====
+            
+        // ===== TILT WII U (CORREGIDO) =====
+        // Primero hacer que mire a la cámara
+        s.lookAt(camera.position);
+        
+        // Calcular el vector dirección para el tilt
         const dir = new THREE.Vector3();
         dir.subVectors(camera.position, s.position);
-        s.lookAt(camera.position);
-
-        const tiltX = THREE.MathUtils.clamp(dir.y * 0.05, -0.3, 0.3);
-        const tiltY = THREE.MathUtils.clamp(dir.x * 0.05, -0.3, 0.3);
-
-        s.rotation.x = tiltX;
-        s.rotation.y = tiltY;
+        dir.normalize();
+        
+        // Aplicar tilt basado en la posición relativa
+        const tiltAmount = 0.15; // Intensidad del tilt
+        const tiltX = THREE.MathUtils.clamp(dir.y * tiltAmount, -0.2, 0.2);
+        const tiltZ = THREE.MathUtils.clamp(-dir.x * tiltAmount, -0.2, 0.2);
+        
+        // Aplicar el tilt como rotación adicional (después del lookAt)
+        s.rotateX(tiltX);
+        s.rotateZ(tiltZ);
 
         s.scale.setScalar(
           THREE.MathUtils.lerp(0.001, CONFIG.photos.scale, progress)
