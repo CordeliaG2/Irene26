@@ -877,3 +877,33 @@ body {
     display: none !important;
   }
 }
+.whatsapp-link {
+  color: #25D366;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  /* Efecto de brillo sutil tipo neón */
+  text-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-link:hover {
+  background: rgba(37, 211, 102, 0.1);
+  transform: scale(1.1); /* Se agranda un poco al tocarlo */
+  text-shadow: 0 0 15px rgba(37, 211, 102, 0.8);
+}
+
+/* Animación de pulso para que llame la atención */
+@keyframes pulse-green {
+  0% { filter: drop-shadow(0 0 0px #25D366); }
+  50% { filter: drop-shadow(0 0 8px #25D366); }
+  100% { filter: drop-shadow(0 0 0px #25D366); }
+}
+
+.whatsapp-link svg {
+  animation: pulse-green 2s infinite;
+}
