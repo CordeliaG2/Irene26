@@ -1,5 +1,35 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+/* ==========================
+   🌌 CONFIGURACIÓN DE EFECTOS ESPACIALES
+========================== */
+const SPACE_EFFECTS_CONFIG = {
+  backgroundGalaxies: {
+    enabled: true,
+    count: 8,
+    minDistance: 80,
+    maxDistance: 150,
+    minSize: 30,
+    maxSize: 70,
+    opacity: 0.4,
+    rotationSpeed: 0.0001
+  },
+  shootingStars: {
+    enabled: true,
+    spawnInterval: 4000,
+    spawnChance: 0.6,
+    speed: 2,
+    length: 8,
+    trailPoints: 15
+  },
+  spaceships: {
+    enabled: true,
+    count: 3,
+    patrolRadius: 120,
+    speed: 0.3,
+    scale: 8
+  }
+};
 
 /* ==========================
    AUDIO
@@ -9,7 +39,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 ========================== */
 let startButton = null;
 const playstationSound = new Audio('./sounds/01. Bootup.mp3');
-const crashSound = new Audio('./sounds/crash.mp3');
 const galaxyPlaylist = [
   './sounds/1-02. File Select.mp3',
   './sounds/02. The Star Dust Festival.mp3',
@@ -22,7 +51,6 @@ let currentGalaxyTrack = null;
 let currentGalaxyIndex = -1;
 
 playstationSound.volume = 0.7;
-crashSound.volume = 0.6;
 
 let audioUnlocked = false;
 let musicStarted = false;
@@ -226,49 +254,42 @@ const regalos = [
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
     autor: 'Mari',
-    hora: "02:00"
+    hora: "23:00"
   },
   {
     foto: './img/2.png',
     miniTexto: '🎁',
     mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
     autor: 'lis',
-    hora: "02:05"
+    hora: "23:05"
   },
   {
     foto: './img/3.jpg',
     miniTexto: '💙',
     mensajeCompleto: 'Gracias por tu amistad y sabes que cuentas conmigo para lo que sea, se que estas loca pero las mejores personas lo estan, yo te apoyare como gen a zenku',
     autor: 'Jesus',
-    hora: "02:00"
+    hora: "23:00"
   },
   {
     foto: './img/4.jpg',
     miniTexto: '🌟',
     mensajeCompleto: '¡Feliz cumpleaños, Irene! No quería dejar pasar el día sin decirte que, aunque llevamos poco tiempo de conocernos, me da mucho gusto haber coincidido contigo. Es curioso cómo en tan poco tiempo se puede empezar a construir una amistad tan auténtica, y valoro mucho la confianza que hemos ido ganando. Me parece genial que, más allá de los estudios, seamos personas con las que se puede platicar y compartir momentos de calidad como el de hoy.Me la estoy pasando muy bien hoy tomando algo con todos y conociéndonos más a fondo fuera del entorno de siempre. Creo que son estos momentos de convivencia los que realmente cuentan y los que hacen que una amistad crezca de verdad, dejando de lado por un rato las responsabilidades para simplemente disfrutar. Me agrada mucho tu forma de ser y la vibra que transmites, y me da gusto que estemos compartiendo este festejo entre amigos y con la maestra.Te deseo un año increíble, lleno de éxitos en todo lo que te propongas y de muchos más momentos compartidos como este. Espero que este sea solo el primero de muchos cumpleaños que me toque festejar contigo ahora que somos amigos. Disfruta muchísimo tu día, sigue siendo esa gran persona que eres y cuenta conmigo para lo que necesites en este camino que estamos recorriendo. ¡Muchas felicidades, Irene, te mando un fuerte abrazo!',
     autor: 'JuanMa',
-    hora: "02:00"
+    hora: "23:00"
   },
   {
     foto: './img/5.jpg',
     miniTexto: '⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
     autor: 'Sam Urios',
-    hora: "02:00"
+    hora: "23:00"
   },
   {
     foto: './img/6.jpg',
     miniTexto: '💫',
     mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
     autor: 'Servin',
-    hora: "02:00"
-  },
-  {
-    foto: './img/no.jpg',
-    miniTexto: '💫',
-    mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
-    autor: 'Servin',
-    hora: "02:00"
+    hora: "23:00"
   }
 ];
 
@@ -309,7 +330,7 @@ const CONFIG = {
     radius: 7,
     branches: 10,
     spin: 0.30,
-    size: 0.015,
+    size: 0.030,
     insideColor: "#dbe7ff",
     middleColor: "#87ceeb",
     outsideColor: "#4a9eff",
@@ -330,8 +351,8 @@ const CONFIG = {
     floatSpeed: 0.0007,
   },
   particles: {
-    count: 250,
-    size: 0.05,
+    count: 500,
+    size: 0.10,
   }
 };
 const TEXT_ASPECT = CONFIG.text.canvasWidth / CONFIG.text.canvasHeight; // 4
@@ -347,7 +368,7 @@ function createStartScreen() {
       <h1>🌌 Te doy la bienvenida al Memory Galaxy Museum</h1>
       <p>Un regalo especial</p>
       <button id="startButton" class="start-btn">
-        ▶ Comenzar
+        ▶ Haz click aqui para Comenzar
       </button>
       <p class="hint">🎧 Activa el audio para mejor experiencia</p>
     </div>
@@ -608,7 +629,7 @@ function createFloatingStarParticles() {
   const extrudeSettings = { depth: 0.05, bevelEnabled: false };
   const geometry = new THREE.ExtrudeGeometry(starShape, extrudeSettings);
   
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 24; i++) {
     const material = new THREE.MeshPhongMaterial({
       color: Math.random() > 0.5 ? 0x4a9eff : 0x87ceeb,
       transparent: true,
@@ -629,7 +650,8 @@ function createFloatingStarParticles() {
       speed: 0.01 + Math.random() * 0.02,
       angle: angle,
       radius: radius,
-      rotSpeed: (Math.random() - 0.5) * 0.02
+      rotSpeed: (Math.random() - 0.5) * 0.02,
+      size: 0.10,
     };
     
     starParticles.push(star);
@@ -638,6 +660,69 @@ function createFloatingStarParticles() {
 }
 
 createFloatingStarParticles();
+
+/* ==========================
+   TEXTURAS DE PARTÍCULAS
+========================== */
+function createStarTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  
+  // Crear gradiente radial para el brillo
+  const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+  gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.3)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 32, 32);
+  
+  // Agregar cruz de estrella
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  
+  // Línea horizontal
+  ctx.fillRect(0, 15, 32, 2);
+  
+  // Línea vertical
+  ctx.fillRect(15, 0, 2, 32);
+  
+  // Diagonales
+  ctx.save();
+  ctx.translate(16, 16);
+  ctx.rotate(Math.PI / 4);
+  ctx.fillRect(-16, -1, 32, 2);
+  ctx.fillRect(-1, -16, 2, 32);
+  ctx.restore();
+  
+  return new THREE.CanvasTexture(canvas);
+}
+
+function createCircleTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  
+  // Crear gradiente radial suave
+  const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(16, 16, 16, 0, Math.PI * 2);
+  ctx.fill();
+  
+  return new THREE.CanvasTexture(canvas);
+}
+
+// Crear texturas globales
+const starTexture = createStarTexture();
+const circleTexture = createCircleTexture();
 
 /* ==========================
    GLITTER
@@ -673,6 +758,8 @@ const glitterMaterial = new THREE.PointsMaterial({
   opacity: 0.9,
   blending: THREE.AdditiveBlending,
   depthWrite: false,
+  map: circleTexture, // ← Textura de círculo suave
+  alphaTest: 0.001,
 });
 
 const glitter = new THREE.Points(glitterGeometry, glitterMaterial);
@@ -737,6 +824,8 @@ function crearGalaxia() {
     opacity: 0,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
+    map: starTexture, // ← Textura de estrella brillante
+    alphaTest: 0.001,
   });
 
   const points = new THREE.Points(geometry, material);
@@ -862,7 +951,8 @@ function createSparkleEffect(position) {
         transparent: true,
         opacity: 1,
         blending: THREE.AdditiveBlending,
-        depthTest: false
+        depthTest: false,
+        map: starTexture, // ← Textura de estrella
       })
     );
     
@@ -899,7 +989,8 @@ function createStarTrail() {
       transparent: true,
       opacity: 0.6,
       blending: THREE.AdditiveBlending,
-      depthTest: false
+      depthTest: false,
+      map: circleTexture, // ← Textura de círculo suave
     })
   );
   
