@@ -254,42 +254,42 @@ const regalos = [
     miniTexto: 'Feliz cumple ✨',
     mensajeCompleto: 'Muchas felicidades amiga!! 🥳🥳🎂 Feliz cumpleaños ✨🎂✨deseo que pases un día muy bonito junto a las personas que más quieres, que sigas cumpliendo tus metas y te vaya muy bien, te mando un fuerte abrazo 🤗🥳🥳✨ pd: queremos pastel!! 🎂✨🎂',
     autor: 'Mari',
-    hora: "23:00"
+    hora: "03:00"
   },
   {
     foto: './img/2.png',
     miniTexto: '🎁',
     mensajeCompleto: 'Feliz cumpleaños Irene. Espero que disfrutes mucho de este día y te deseo mucha suerte en cualquier proyecto que tengas. TQM.',
-    autor: 'lis',
-    hora: "23:05"
+    autor: 'liss',
+    hora: "03:05"
   },
   {
     foto: './img/3.jpg',
     miniTexto: '💙',
-    mensajeCompleto: 'Gracias por tu amistad y sabes que cuentas conmigo para lo que sea, se que estas loca pero las mejores personas lo estan, yo te apoyare como gen a zenku',
+    mensajeCompleto: 'Gracias por tu amistad, sabes que cuentas conmigo para lo que sea, se que estas loca pero las mejores personas lo estan, yo te apoyare como gen a senku',
     autor: 'Jesus',
-    hora: "23:00"
+    hora: "03:00"
   },
   {
     foto: './img/4.jpg',
     miniTexto: '🌟',
     mensajeCompleto: '¡Feliz cumpleaños, Irene! No quería dejar pasar el día sin decirte que, aunque llevamos poco tiempo de conocernos, me da mucho gusto haber coincidido contigo. Es curioso cómo en tan poco tiempo se puede empezar a construir una amistad tan auténtica, y valoro mucho la confianza que hemos ido ganando. Me parece genial que, más allá de los estudios, seamos personas con las que se puede platicar y compartir momentos de calidad como el de hoy.Me la estoy pasando muy bien hoy tomando algo con todos y conociéndonos más a fondo fuera del entorno de siempre. Creo que son estos momentos de convivencia los que realmente cuentan y los que hacen que una amistad crezca de verdad, dejando de lado por un rato las responsabilidades para simplemente disfrutar. Me agrada mucho tu forma de ser y la vibra que transmites, y me da gusto que estemos compartiendo este festejo entre amigos y con la maestra.Te deseo un año increíble, lleno de éxitos en todo lo que te propongas y de muchos más momentos compartidos como este. Espero que este sea solo el primero de muchos cumpleaños que me toque festejar contigo ahora que somos amigos. Disfruta muchísimo tu día, sigue siendo esa gran persona que eres y cuenta conmigo para lo que necesites en este camino que estamos recorriendo. ¡Muchas felicidades, Irene, te mando un fuerte abrazo!',
     autor: 'JuanMa',
-    hora: "23:00"
+    hora: "03:00"
   },
   {
     foto: './img/5.jpg',
     miniTexto: '⭐',
     mensajeCompleto: 'Gracias por cada risa compartida y cada momento inolvidable. Que sigas brillando siempre.',
-    autor: 'Sam Urios',
-    hora: "23:00"
+    autor: 'Urios',
+    hora: "03:00"
   },
   {
     foto: './img/6.jpg',
     miniTexto: '💫',
-    mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que lo digo a cada rato pero... Si sabes que te quiero mucho, verdad?, jajaja. Feliz cumpleaños!!',
+    mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que te lo digo a cada rato pero... "Si sabes que te quiero mucho, verdad? 🥺", jajaja. Feliz cumpleaños!!',
     autor: 'Servin',
-    hora: "23:00"
+    hora: "03:00"
   }
 ];
 
