@@ -44,7 +44,11 @@ const galaxyPlaylist = [
   './sounds/02. The Star Dust Festival.mp3',
   './sounds/08. Rosetta of the Observatory 1.mp3',
   './sounds/10. Star Dust Road.mp3',
-  './sounds/videoplayback.mp3'
+  './sounds/videoplayback.mp3',
+  './sounds/05. Another Story.mp3',
+  './sounds/11. Starship Mario, Launch!.mp3',
+  './sounds/25. Unidentified Planet.mp3',
+  './sounds/74. Green Star.mp3'
 ];
 
 let currentGalaxyTrack = null;
