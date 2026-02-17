@@ -290,6 +290,13 @@ const regalos = [
     mensajeCompleto: 'La primera vez que te vi nunca me imagine lo importante que ibas a ser para mi, estos ultimos años me he divertido haciendo y deshaciendo contigo, no me imagino como habria sido todo sin ti, muchas gracias por aparecer en mi vida, se que te lo digo a cada rato pero... "Si sabes que te quiero mucho, verdad? 🥺", jajaja. Feliz cumpleaños!!',
     autor: 'Servin',
     hora: "03:00"
+  },
+  {
+    foto: './img/7.jpg',
+    miniTexto: '💫',
+    mensajeCompleto: 'Holis Irene💕, no tenemos fotitos juntas pero si tendré siempre un huequito en mi corazón para ti, feliz cumpleaños amiga, te quiero muchote!!!',
+    autor: 'Carol',
+    hora: "03:00"
   }
 ];
 
