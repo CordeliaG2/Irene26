@@ -640,13 +640,13 @@ function createFloatingStarParticles() {
   const extrudeSettings = { depth: 0.05, bevelEnabled: false };
   const geometry = new THREE.ExtrudeGeometry(starShape, extrudeSettings);
   
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 128; i++) {
     const material = new THREE.MeshPhongMaterial({
       color: Math.random() > 0.5 ? 0x4a9eff : 0x87ceeb,
       transparent: true,
       opacity: 0.8,
       emissive: 0x4a9eff,
-      emissiveIntensity: 0.5,
+      emissiveIntensity: 0.7,
     });
     
     const star = new THREE.Mesh(geometry, material);
